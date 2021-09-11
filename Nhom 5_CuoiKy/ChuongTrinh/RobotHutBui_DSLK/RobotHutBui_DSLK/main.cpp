@@ -8,7 +8,7 @@ int main()
 	cout << "Map hien tai:" << endl;
 	prob.ShowMap();
     Cleaner VC;
-	VC.init(prob);
+	VC.Init(prob);
 	VC.Auto();
     return 1;
 }

@@ -17,18 +17,64 @@ class Cleaner
         string manufacturer;
         string serial_number;
         int current_battery;
+		int battery_threshold;
         Map map_data;
 		Direction current;
 
     public:
-		void init(Map n_map)
+		void SetBatteryThreshold(int threshold)
+		{
+			this->battery_threshold = threshold;
+		}
+
+		bool CheckBattery(int threshold)
+		{
+			if (current_battery <= threshold)
+				return false;
+			else
+				return true;
+		}
+
+		void ShowLowBattery()
+		{
+			int temp = battery_threshold;
+			if (!CheckBattery(0.05*temp))
+			{
+				cout << "LUU Y: Nguon pin duoi 5%. Xin hay sac robot cua ban." << endl;
+			}
+			else
+			{
+				if (!CheckBattery(0.1*temp))
+				{
+					cout << "LUU Y: Nguon pin duoi 10%. Xin hay sac robot cua ban." << endl;
+				}
+				else
+				{
+					if (!CheckBattery(0.15*temp))
+					{
+						cout << "LUU Y: Nguon pin duoi 15%. Xin hay sac robot cua ban." << endl;
+					}
+				}
+			}
+		}
+
+		int GetBattery()
+		{
+			return this->current_battery;
+		}
+
+		void Init(Map n_map)
 		{
 			cout << "Nhap manufacturer: ";
 			getline(cin, manufacturer);
 			cout << "Nhap serial number: ";
 			getline(cin, serial_number);
 			map_data = n_map;
-			current_battery = 100;
+			
+			cout << "Nhap dung luong pin toi da: ";
+			cin >> battery_threshold;
+			cout << "Nhap dung luong pin hien tai: ";
+			cin >> current_battery;
 			
 			int x, y;
 			cout << "Nhap toa do x cua may hut bui (bat dau tu 0, tu tren xuong duoi): ";
@@ -42,6 +88,7 @@ class Cleaner
 	
 			current.position->cell.type = 0;
 		}
+
 		void RotateRight90()
 		{
 			current.direction++;
@@ -139,7 +186,7 @@ class Cleaner
 			return true;
 		}
 
-		void printInfo()
+		void PrintInfo()
 		{
 			cout << "*Manufacturer: " << manufacturer << ". Serial Number: " << serial_number << endl;
 			cout << "- Current postion: " << current.position->cell.x << "," << current.position->cell.y << endl;
@@ -162,10 +209,10 @@ class Cleaner
 				break;
 			}
 			cout << endl;
-			cout << "- Current battery: " << current_battery << endl;
+			cout << "- Current battery: " << GetBattery() << "/" << battery_threshold << endl;
 			cout << "- Current map: " << endl;
 			map_data.ShowMap();
-
+			ShowLowBattery();
 		}
 
 		void SetDirection(int x, int y, int direction)          // Chuyen vi tri va huong cua may hut bui
@@ -208,10 +255,14 @@ class Cleaner
 			//Lay tu ban do kiem tra vi tri do la loai nao
 			cell_check = result->position->cell.type;
 			// Obstacle or Wall . Neu vi tri do la tuong hoac chuong ngai vat thi tra ve NULL
-			if (cell_check == 1 || cell_check == 4) return NULL;
+			if (cell_check == 1 || cell_check == 4)
+				return NULL;
 			// Cleaned. Neu hien tai o che do khong cho phep di qua vi tri da don va o do da don thi tra ve NULL
-			else if (!allowCleaned && cell_check == 2) return NULL;
-			else return result;
+			else
+				if (!allowCleaned && cell_check == 2)
+					return NULL;
+				else
+					return result;
 			return NULL;
 		}
 		bool FindPath(bool isAllowCleaned) {
@@ -239,7 +290,7 @@ class Cleaner
 			int timer;
 			timer = 0;
 			cout << "*Timer: " << timer << endl;
-			printInfo();
+			PrintInfo();
 
 			timer++;
 			while (!isComplete())
@@ -256,7 +307,7 @@ class Cleaner
 					p->cell.type = 2; //
 					current.position->cell.type = 0; //
 					current_battery--;
-					printInfo();
+					PrintInfo();
 					Sleep(1000);
 				}
 				else
