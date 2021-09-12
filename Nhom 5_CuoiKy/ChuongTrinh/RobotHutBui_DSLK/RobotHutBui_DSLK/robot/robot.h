@@ -38,22 +38,36 @@ class Cleaner
 		void ShowLowBattery()
 		{
 			int temp = battery_threshold;
-			if (!CheckBattery(0.05*temp))
+			int flag = 0;
+			if (!CheckBattery(0.05*temp) && (0.05*temp < current_battery + 1))
 			{
 				cout << "LUU Y: Nguon pin duoi 5%. Xin hay sac robot cua ban." << endl;
+				flag = 1;
 			}
 			else
 			{
-				if (!CheckBattery(0.1*temp))
+				if (!CheckBattery(0.1*temp) && (0.1*temp < current_battery + 1))
 				{
 					cout << "LUU Y: Nguon pin duoi 10%. Xin hay sac robot cua ban." << endl;
+					flag = 1;
 				}
 				else
 				{
-					if (!CheckBattery(0.15*temp))
+					if (!CheckBattery(0.15*temp) && (0.15*temp < current_battery + 1))
 					{
 						cout << "LUU Y: Nguon pin duoi 15%. Xin hay sac robot cua ban." << endl;
+						flag = 1;
 					}
+				}
+			}
+			if (flag == 1)
+			{
+				cout << "Tiep tuc? (y/n): ";
+				char ch = 'n';
+				cin >> ch;
+				if (ch == 'n')
+				{
+					exit(1);
 				}
 			}
 		}
@@ -114,60 +128,6 @@ class Cleaner
 				RotateRight90();
 			}
 		}
-
-		//int FindPath()
-		//{
-		//	int attempt = 0;
-		//	int flag = 0;
-		//	int old_direction = current->direction;
-		//	do
-		//	{
-		//		Node* p = position;
-
-		//		switch (current_direction)
-		//		{
-		//		case 0: //North
-		//			p = p->pNorth;
-		//			break;
-		//		case 1:	//East
-		//			p = p->pEast;
-		//			break;
-		//		case 2: //South
-		//			p = p->pSouth;
-		//			break;
-		//		case 3: //West
-		//			p = p->pWest;
-		//			break;
-		//		default:
-		//			break;
-		//		}
-		//		if (p != NULL && p->cell.type != 1 && p->cell.type != 4)
-		//		{
-		//			position->cell.type = 2;
-		//			position = p;
-		//			flag = 1;
-		//		}
-		//		else
-		//		{
-		//			current_direction = old_direction;
-		//			switch (++attempt)
-		//			{
-		//			case 1:
-		//				RotateRight90();
-		//				break;
-		//			case 2:
-		//				RotateLeft90();
-		//				break;
-		//			case 3:
-		//				Rotate180();
-		//				break;
-		//			default:
-		//				break;
-		//			}
-		//		}
-		//	} while (flag == 0 || attempt == 4);
-		//	return flag;
-		//}
 
 		int isComplete()
 		{
@@ -281,10 +241,100 @@ class Cleaner
 			return false;
 		}
 
-		void Manual(int action, int steps) 
+		//Chon hanh dong cho robot
+		int ChooseAction(unsigned int flag)
 		{
-			
+			cout << "Choose action:" << endl;
+			cout << "1.GoAhead" << "\n2.TurnRight" << "\n3.GoBack" << "\n4.TurnLeft" << "\n0.Exit" << endl;
+			cin >> flag;  //Nhap vao hanh dong
+			if (flag == 0)
+				return 0;
+			else if (flag < 5)
+				return flag;
+			else
+			{
+				cout << "Choose Action again!" << endl;
+				return ChooseAction(flag);
+			}
 		}
+
+		//Doi huong robot theo hanh dong da chon
+		void UpdateDirection(unsigned int flag)
+		{
+			switch (flag) //hanh dong
+			{
+			case 1:  //chon di thang
+				break;
+			case 2:  //chon turn right
+			{
+				RotateRight90();
+			/*	if (current.direction == 0)
+					current.direction = 1;
+				else if (current.direction == 3)
+					current.direction = 0;
+				else if (current.direction == 2)
+					current.direction = 3;
+				else if (current.direction == 1)
+					current.direction = 2;*/
+				break;
+			}
+			case 3:  //chon turn back
+			{
+				Rotate180();
+				/*if (current.direction == 0)
+					current.direction = 2;
+				else if (current.direction == 3)
+					current.direction = 1;
+				else if (current.direction == 2)
+					current.direction = 0;
+				else if (current.direction == 1)
+					current.direction = 3;*/
+				break;
+			}
+			case 4:  //chon turn left
+			{
+				RotateLeft90();
+				/*if (current.direction == 0)
+					current.direction = 3;
+				else if (current.direction == 3)
+					current.direction = 2;
+				else if (current.direction == 2)
+					current.direction = 1;
+				else if (current.direction == 1)
+					current.direction = 0;*/
+				break;
+			}
+			}
+		}
+
+		void RoBotGo()
+		{
+			ShowLowBattery();
+			if (current_battery < 0.02*battery_threshold)
+			{
+				cout << "Het pin. Khong the tien hanh di chuyen. Xin hay sac." << endl;
+				return;
+			}
+
+			current.position->cell.type = 0;
+			current_battery--;
+		}
+
+		void Manual()
+		{
+			unsigned int temp = 1;
+			while (temp != 0)
+			{
+				PrintInfo();
+				temp = ChooseAction(temp);
+				UpdateDirection(temp);
+				current.position->cell.type = 2;
+				bool kq_findpath = FindPath(true);
+				if (kq_findpath)
+					RoBotGo();
+			}
+		}
+
 		void Auto()
 		{
 			int timer;
@@ -297,7 +347,7 @@ class Cleaner
 			{
 				cout << "*Timer: " << timer << endl;
 				Node* p = current.position; //
-				if (current_battery != 0)
+				if (current_battery > 0.02*battery_threshold)
 				{
 					bool kq_findpath = FindPath(false);
 					if (kq_findpath == 0)
@@ -308,7 +358,7 @@ class Cleaner
 					current.position->cell.type = 0; //
 					current_battery--;
 					PrintInfo();
-					Sleep(1000);
+					Sleep(100);
 				}
 				else
 				{
