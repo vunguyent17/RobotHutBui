@@ -434,35 +434,65 @@ class Cleaner
 			current_battery--;
 		}
 
-		void Manual()
+		void LiveControl()
 		{
 			unsigned int temp = 1;
-			PrintInfo();
-			while (temp != 0)
+			while (true)
 			{
-				
 				temp = ChooseAction(temp);
-				int n_steps = 1;				//So buoc
-				if (temp == 1 || temp == 3)		//Tien n buoc hay lui n buoc
-				{
-					cout << "Nhap so buoc: ";
-					cin >> n_steps;
-				}
-				for (int i = 0; i < n_steps; i++)
-				{
-					if ((temp == 3 && i == 0)|| temp!= 3)		//Truong hop lui N buoc thi quay 180 do roi di thang
-					{
-						UpdateDirection(temp);
-					}
-					current.position->cell.type = 2;
-					bool kq_findpath = FindPath(true);
-					if (kq_findpath)
-						RoBotGo();
-					PrintInfo();
-					system("pause");
-				}
-				
+				UpdateDirection(temp);
+				if (temp == 0)
+					break;
+				current.position->cell.type = 2;
+				bool kq_findpath = FindPath(true);
+				if (kq_findpath)
+					RoBotGo();
+				PrintInfo();
 			}
+		}
+
+		void SetupControl(int n, int flag)
+		{
+			UpdateDirection(flag);
+			for (int i = 0; i < n; i++)
+			{
+				current.position->cell.type = 2;
+				bool kq_findpath = FindPath(true);
+				if (kq_findpath)
+					RoBotGo();
+				PrintInfo();
+				Sleep(500);
+			}
+		}
+
+		void Manual()
+		{
+			PrintInfo();
+			cout << "Chon: 1. Live Control, 2. Setup Control, 0.Exit: ";
+			int option = -1;
+			do
+			{
+				cin >> option;
+				switch (option)
+				{
+				case 1:
+					LiveControl();
+					break;
+				case 2:
+				{
+					int step;
+					unsigned int flag = 1;
+					cout << "Nhap so buoc de robot di chuyen: ";
+					cin >> step;
+					flag = ChooseAction(flag);
+					SetupControl(step, flag);
+					break;
+				}
+				default:
+					break;
+				}
+				cout << "Chon: 1. Live Control, 2. Setup Control, 0.Exit: ";
+			} while (option != 0);
 		}
 
 
