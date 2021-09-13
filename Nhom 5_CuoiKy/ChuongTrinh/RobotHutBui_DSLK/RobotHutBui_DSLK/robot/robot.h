@@ -20,8 +20,34 @@ class Cleaner
 		int battery_threshold;
         Map map_data;
 		Direction current;
+		
+	
+		int current_mode = 0;	// 0-Manual, 1-Auto
+		
+		int uncleaned_direction = 4;
+		int search_mode = 0;
 
     public:
+		void Menu()
+		{
+			cout << "Chon mot trong hai che do: 1. Manual, 2. Auto: ";
+			int option = -1;
+			cin >> option;
+
+			switch (option)
+			{
+			case 1:
+				Manual();
+				current_mode = 0;
+				break;
+			case 2:
+				Auto();
+				current_mode = 1;
+				break;
+			default:
+				break;
+			}
+		}
 		void SetBatteryThreshold(int threshold)
 		{
 			this->battery_threshold = threshold;
@@ -225,6 +251,7 @@ class Cleaner
 					return result;
 			return NULL;
 		}
+
 		bool FindPath(bool isAllowCleaned) {
 			int instruction[4][4] = { {0,1,3,2},{1,2,0,3},{2,3,1,0},{3,0,2,1} };      //Cac bo so lan luot can nhac cac huong
 			int direction;
@@ -237,6 +264,119 @@ class Cleaner
 					this->current = *res;
 					return true;
 				}
+			}
+			return false;
+		}
+
+
+		void FindPath_Auto()
+		{
+			bool kq_findpath = FindPath(false);
+			int instruction[4][4] = { {0,1,3,2},{1,2,0,3},{2,3,1,0},{3,0,2,1} };      //Cac bo so lan luot can nhac cac huong
+			int direction;
+			if (kq_findpath == 0)
+			{
+				for (int i = 0; i < 4; i++)
+				{
+					direction = instruction[current.direction][i];
+					Direction* res = CheckNextPosition(direction, true);    //isAllowCleaned = true cho phep di o da don, false la khong
+					if (res && (CheckUncleanedOnDirection(*res) || search_mode == 1))
+					{
+						this->current = *res;
+						return;
+					}
+				}
+				for (int i = 0; i < 4; i++)
+				{
+					direction = instruction[current.direction][i];
+					Direction* res = CheckNextPosition(direction, true);    //isAllowCleaned = true cho phep di o da don, false la khong
+					cout << uncleaned_direction << endl;
+					if (res)
+					{
+						this->current = *res;
+						Node* p = current.position;
+						switch (uncleaned_direction)
+						{
+						case 0:
+							p = p->pNorth;
+							break;
+						case 1:
+							p = p->pEast;
+							break;
+						case 2:
+							p = p->pSouth;
+							break;
+						case 3:
+							p = p->pWest;
+							break;
+						default:
+							break;
+						}
+						if (this->uncleaned_direction < 4 && search_mode == 0 && p->cell.type!=1 && p->cell.type != 4)
+						{
+							this->current.direction = this->uncleaned_direction;
+							search_mode = 1;
+						}
+						return;
+					}
+				}
+			}
+			else
+			{
+				uncleaned_direction = 4;
+				search_mode = 0;
+			}
+		}
+		
+		bool CheckUncleanedOnDirection(Direction result) //Kiem tra huong hien tai co o nao trong hay khong, co thi luu lai vao uncleaned_direction
+		{
+			Node* p = result.position;
+			switch (result.direction)
+			{
+			case 0: // North			
+				while (p!=NULL)
+				{
+					if (p->cell.type == 3)
+					{
+						this->uncleaned_direction = 0;
+						return true;
+					}
+					p = p->pNorth;
+				}
+				break;
+			case 1: // East
+				while (p != NULL)
+				{
+					if (p->cell.type == 3)
+					{
+						this->uncleaned_direction = 1;
+						return true;
+					}
+					p = p->pEast;
+				}
+				break;
+			case 2: // South
+				while (p != NULL)
+				{
+					if (p->cell.type == 3)
+					{
+						this->uncleaned_direction = 2;
+						return true;
+					}
+					p = p->pSouth;
+				}
+				break;
+			case 3: // West
+				while (p != NULL)
+				{
+					if (p->cell.type == 3)
+					{
+						this->uncleaned_direction = 3;
+						return true;
+					}
+					p = p->pNorth;
+				}
+				break;
 			}
 			return false;
 		}
@@ -268,40 +408,16 @@ class Cleaner
 			case 2:  //chon turn right
 			{
 				RotateRight90();
-			/*	if (current.direction == 0)
-					current.direction = 1;
-				else if (current.direction == 3)
-					current.direction = 0;
-				else if (current.direction == 2)
-					current.direction = 3;
-				else if (current.direction == 1)
-					current.direction = 2;*/
 				break;
 			}
 			case 3:  //chon turn back
 			{
 				Rotate180();
-				/*if (current.direction == 0)
-					current.direction = 2;
-				else if (current.direction == 3)
-					current.direction = 1;
-				else if (current.direction == 2)
-					current.direction = 0;
-				else if (current.direction == 1)
-					current.direction = 3;*/
 				break;
 			}
 			case 4:  //chon turn left
 			{
 				RotateLeft90();
-				/*if (current.direction == 0)
-					current.direction = 3;
-				else if (current.direction == 3)
-					current.direction = 2;
-				else if (current.direction == 2)
-					current.direction = 1;
-				else if (current.direction == 1)
-					current.direction = 0;*/
 				break;
 			}
 			}
@@ -349,16 +465,12 @@ class Cleaner
 				Node* p = current.position; //
 				if (current_battery > 0.02*battery_threshold)
 				{
-					bool kq_findpath = FindPath(false);
-					if (kq_findpath == 0)
-					{
-						bool kq_findpath = FindPath(true);
-					}
+					FindPath_Auto();
 					p->cell.type = 2; //
 					current.position->cell.type = 0; //
 					current_battery--;
 					PrintInfo();
-					Sleep(100);
+					system("pause");
 				}
 				else
 				{

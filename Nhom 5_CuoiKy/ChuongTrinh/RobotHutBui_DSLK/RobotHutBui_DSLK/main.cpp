@@ -9,21 +9,6 @@ int main()
 	prob.ShowMap();
     Cleaner VC;
 	VC.Init(prob);
-	
-	cout << "Chon mot trong hai che do: 1. Manual, 2. Auto: ";
-	int option = -1;
-	cin >> option;
-	
-	switch (option)
-	{
-	case 1:
-		VC.Manual();
-		break;
-	case 2:
-		VC.Auto();
-		break;
-	default:
-		break;
-	}
+	VC.Menu();
     return 1;
 }
