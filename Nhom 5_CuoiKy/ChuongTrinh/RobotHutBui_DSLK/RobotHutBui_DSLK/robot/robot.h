@@ -14,18 +14,14 @@ struct Direction
 class Cleaner
 {
     protected:
-        string manufacturer;
-        string serial_number;
-        int current_battery;
-		int battery_threshold;
+        string manufacturer = "";
+        string serial_number = "";
+        float current_battery = 0;
+		float battery_threshold = 0;
         Map map_data;
 		Direction current;
 		
-	
-		int current_mode = 0;	// 0-Manual, 1-Auto
-		
 		int uncleaned_direction = 4;
-		int search_mode = 0;
 
     public:
 		void Menu()
@@ -38,126 +34,52 @@ class Cleaner
 			{
 			case 1:
 				Manual();
-				current_mode = 0;
 				break;
 			case 2:
 				Auto();
-				current_mode = 1;
 				break;
 			default:
 				break;
 			}
 		}
-		void SetBatteryThreshold(int threshold)
-		{
-			this->battery_threshold = threshold;
-		}
-
-		bool CheckBattery(int threshold)
-		{
-			if (current_battery <= threshold)
-				return false;
-			else
-				return true;
-		}
-
-		void ShowLowBattery()
-		{
-			int temp = battery_threshold;
-			int flag = 0;
-			if (!CheckBattery(0.05*temp) && (0.05*temp < current_battery + 1))
-			{
-				cout << "LUU Y: Nguon pin duoi 5%. Xin hay sac robot cua ban." << endl;
-				flag = 1;
-			}
-			else
-			{
-				if (!CheckBattery(0.1*temp) && (0.1*temp < current_battery + 1))
-				{
-					cout << "LUU Y: Nguon pin duoi 10%. Xin hay sac robot cua ban." << endl;
-					flag = 1;
-				}
-				else
-				{
-					if (!CheckBattery(0.15*temp) && (0.15*temp < current_battery + 1))
-					{
-						cout << "LUU Y: Nguon pin duoi 15%. Xin hay sac robot cua ban." << endl;
-						flag = 1;
-					}
-				}
-			}
-			if (flag == 1)
-			{
-				cout << "Tiep tuc? (y/n): ";
-				char ch = 'n';
-				cin >> ch;
-				if (ch == 'n')
-				{
-					exit(1);
-				}
-			}
-		}
-
-		int GetBattery()
-		{
-			return this->current_battery;
-		}
-
-		void Init(Map n_map)
+	
+		//NHAP va XUAT
+		void Init()
 		{
 			cout << "Nhap manufacturer: ";
 			getline(cin, manufacturer);
 			cout << "Nhap serial number: ";
 			getline(cin, serial_number);
-			map_data = n_map;
-			
 			cout << "Nhap dung luong pin toi da: ";
 			cin >> battery_threshold;
 			cout << "Nhap dung luong pin hien tai: ";
 			cin >> current_battery;
-			
+
+		}
+
+		void SetMap(Map input)
+		{
+			this->map_data = input;
+		}
+
+		void SetRobotInMap()
+		{
 			int x, y;
 			cout << "Nhap toa do x cua may hut bui (bat dau tu 0, tu tren xuong duoi): ";
 			cin >> x;
 			cout << "Nhap toa do y cua may hut bui (bat dau tu 0, tu trai qua phai): ";
 			cin >> y;
 			current.position = map_data.FindNode(x, y);
-			
+
 			cout << "Nhap huong cua may hut bui (0.North, 1.East, 2.South, 3.West): ";
 			cin >> current.direction;
-	
+
 			current.position->cell.type = 0;
-		}
-
-		void RotateRight90()
-		{
-			current.direction++;
-			if (current.direction == 4)
-			{
-				current.direction = 0;
-			}
-		}
-
-		void RotateLeft90()
-		{
-			current.direction--;
-			if (current.direction == -1)
-			{
-				current.direction = 3;
-			}
-		}
-
-		void Rotate180()
-		{
-			for (int i = 0; i < 2; i++)
-			{
-				RotateRight90();
-			}
 		}
 
 		int isComplete()
 		{
-			Node* p1 = map_data.pHead;
+			Node* p1 = map_data.getpHead();
 			while (p1)
 			{
 				Node* p2 = p1;
@@ -198,9 +120,72 @@ class Cleaner
 			cout << "- Current battery: " << GetBattery() << "/" << battery_threshold << endl;
 			cout << "- Current map: " << endl;
 			map_data.ShowMap();
-			ShowLowBattery();
+			ControlLowBattery();
 		}
 
+		//BATTERY CONTROL
+		//Thiet lap dung luong pin toi da
+		void SetBatteryThreshold(float threshold)
+		{
+			this->battery_threshold = threshold;
+		}
+
+		//Kiem tra pin
+		bool CheckBattery(float threshold)
+		{
+			if (current_battery <= threshold)
+				return false;
+			else
+				return true;
+		}
+
+		//Thong bao khi pin yeu
+		void ControlLowBattery()
+		{
+			float temp = battery_threshold;
+			int flag = 0;
+			if (!CheckBattery(float(0.05)*temp) && (float(0.05)*temp < (current_battery + 1)))
+			{
+				cout << "LUU Y: Nguon pin duoi 5%. Xin hay sac robot cua ban." << endl;
+				flag = 1;
+			}
+			else
+			{
+				if (!CheckBattery(float(0.1)*temp) && (float(0.1)*temp < (current_battery + 1)))
+				{
+					cout << "LUU Y: Nguon pin duoi 10%. Xin hay sac robot cua ban." << endl;
+					flag = 1;
+				}
+				else
+				{
+					if (!CheckBattery(float(0.15)*temp) && (float(0.15)*temp < (current_battery + 1)))
+					{
+						cout << "LUU Y: Nguon pin duoi 15%. Xin hay sac robot cua ban." << endl;
+						flag = 1;
+					}
+				}
+			}
+			if (flag == 1)
+			{
+				cout << "Tiep tuc? (y/n): ";
+				char ch = 'n';
+				cin >> ch;
+				if (ch == 'n')
+				{
+					exit(1);
+				}
+			}
+		}
+
+		//Lay gia tri pin hien tai
+		float GetBattery()
+		{
+			return this->current_battery;
+		}
+
+		
+
+		//CAC PHUONG THUC TIM DUONG
 		void SetDirection(int x, int y, int direction)          // Chuyen vi tri va huong cua may hut bui
 		{
 			this->current.position->cell.x = x;
@@ -268,73 +253,13 @@ class Cleaner
 			return false;
 		}
 
-
-		void FindPath_Auto()
-		{
-			bool kq_findpath = FindPath(false);
-			int instruction[4][4] = { {0,1,3,2},{1,2,0,3},{2,3,1,0},{3,0,2,1} };      //Cac bo so lan luot can nhac cac huong
-			int direction;
-			if (kq_findpath == 0)
-			{
-				for (int i = 0; i < 4; i++)
-				{
-					direction = instruction[current.direction][i];
-					Direction* res = CheckNextPosition(direction, true);    //isAllowCleaned = true cho phep di o da don, false la khong
-					if (res && (CheckUncleanedOnDirection(*res) || search_mode == 1))
-					{
-						this->current = *res;
-						return;
-					}
-				}
-				for (int i = 0; i < 4; i++)
-				{
-					direction = instruction[current.direction][i];
-					Direction* res = CheckNextPosition(direction, true);    //isAllowCleaned = true cho phep di o da don, false la khong
-					cout << uncleaned_direction << endl;
-					if (res)
-					{
-						this->current = *res;
-						Node* p = current.position;
-						switch (uncleaned_direction)
-						{
-						case 0:
-							p = p->pNorth;
-							break;
-						case 1:
-							p = p->pEast;
-							break;
-						case 2:
-							p = p->pSouth;
-							break;
-						case 3:
-							p = p->pWest;
-							break;
-						default:
-							break;
-						}
-						if (this->uncleaned_direction < 4 && search_mode == 0 && p->cell.type!=1 && p->cell.type != 4)
-						{
-							this->current.direction = this->uncleaned_direction;
-							search_mode = 1;
-						}
-						return;
-					}
-				}
-			}
-			else
-			{
-				uncleaned_direction = 4;
-				search_mode = 0;
-			}
-		}
-		
 		bool CheckUncleanedOnDirection(Direction result) //Kiem tra huong hien tai co o nao trong hay khong, co thi luu lai vao uncleaned_direction
 		{
 			Node* p = result.position;
 			switch (result.direction)
 			{
 			case 0: // North			
-				while (p!=NULL)
+				while (p != NULL)
 				{
 					if (p->cell.type == 3)
 					{
@@ -381,6 +306,53 @@ class Cleaner
 			return false;
 		}
 
+		bool FindPath_Auto()
+		{
+			int instruction[4][4] = { {0,1,3,2},{1,2,0,3},{2,3,1,0},{3,0,2,1} };      //Cac bo so lan luot can nhac cac huong
+			int direction;
+			for (int i = 0; i < 4; i++)
+			{
+				direction = instruction[current.direction][i];
+				Direction* res = CheckNextPosition(direction, false);    //isAllowCleaned = true cho phep di o da don, false la khong
+				if (res != NULL)
+				{
+					this->current = *res;
+					return true;
+				}
+			}
+			
+			for (int i = 0; i < 4; i++)
+			{
+				direction = instruction[current.direction][i];
+				Direction* res = CheckNextPosition(direction, true);    //isAllowCleaned = true cho phep di o da don, false la khong
+				if (res != NULL && CheckUncleanedOnDirection(*res))
+				{
+					this->current = *res;
+					return true;
+				}
+			}
+				
+			for (int i = 0; i < 4; i++)
+			{
+				direction = instruction[current.direction][i];
+				Direction* res = CheckNextPosition(direction, true);    //isAllowCleaned = true cho phep di o da don, false la khong
+
+				if (res != NULL)
+				{
+
+					this->current = *res;
+					if (this->uncleaned_direction < 4)
+					{
+						this->current.direction = this->uncleaned_direction;
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		
+		//MANUAL MODE
 		//Chon hanh dong cho robot
 		int ChooseAction(unsigned int flag)
 		{
@@ -395,6 +367,32 @@ class Cleaner
 			{
 				cout << "Choose Action again!" << endl;
 				return ChooseAction(flag);
+			}
+		}
+
+		void RotateRight90()
+		{
+			current.direction++;
+			if (current.direction == 4)
+			{
+				current.direction = 0;
+			}
+		}
+
+		void RotateLeft90()
+		{
+			current.direction--;
+			if (current.direction == -1)
+			{
+				current.direction = 3;
+			}
+		}
+
+		void Rotate180()
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				RotateRight90();
 			}
 		}
 
@@ -425,7 +423,7 @@ class Cleaner
 
 		void RoBotGo()
 		{
-			ShowLowBattery();
+			ControlLowBattery();
 			if (current_battery < 0.02*battery_threshold)
 			{
 				cout << "Het pin. Khong the tien hanh di chuyen. Xin hay sac." << endl;
@@ -439,17 +437,36 @@ class Cleaner
 		void Manual()
 		{
 			unsigned int temp = 1;
+			PrintInfo();
 			while (temp != 0)
 			{
-				PrintInfo();
+				
 				temp = ChooseAction(temp);
-				UpdateDirection(temp);
-				current.position->cell.type = 2;
-				bool kq_findpath = FindPath(true);
-				if (kq_findpath)
-					RoBotGo();
+				int n_steps = 1;				//So buoc
+				if (temp == 1 || temp == 3)		//Tien n buoc hay lui n buoc
+				{
+					cout << "Nhap so buoc: ";
+					cin >> n_steps;
+				}
+				for (int i = 0; i < n_steps; i++)
+				{
+					if ((temp == 3 && i == 0)|| temp!= 3)		//Truong hop lui N buoc thi quay 180 do roi di thang
+					{
+						UpdateDirection(temp);
+					}
+					current.position->cell.type = 2;
+					bool kq_findpath = FindPath(true);
+					if (kq_findpath)
+						RoBotGo();
+					PrintInfo();
+					system("pause");
+				}
+				
 			}
 		}
+
+
+		//AUTOMATIC MODE
 
 		void Auto()
 		{
@@ -457,6 +474,7 @@ class Cleaner
 			timer = 0;
 			cout << "*Timer: " << timer << endl;
 			PrintInfo();
+			system("pause");
 
 			timer++;
 			while (!isComplete())

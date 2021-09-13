@@ -35,7 +35,7 @@ Node* CreateNode(int status)
 
 class Map
 {
-public:
+protected:
 	int rows;
 	int cols;
 	Node* pHead;			//Luu lai Node dau tien
@@ -44,6 +44,10 @@ public:
 	Node* pPivotNorth;		//Luu lai Node phia Bac cua node hien tai
 	Node* pTail;			//Luu lai Node sau cung hien tai
 public:
+	Node* getpHead()
+	{
+		return pHead;
+	}
 	void KhoiTaoBanDo(int n_rows, int n_cols)
 	{
 		rows = n_rows;
@@ -52,7 +56,7 @@ public:
 		pTail = NULL;
 	}
 
-	// Robot (dấu x), Obstackle (*), Cleaned (.), UnCleaned ( ), Wall (-) 
+	// Robot (x), Obstackle (*), Cleaned (.), UnCleaned ( ), Wall (-) 
 	void Insert(Node* p)
 	{
 		if (pHead == NULL)

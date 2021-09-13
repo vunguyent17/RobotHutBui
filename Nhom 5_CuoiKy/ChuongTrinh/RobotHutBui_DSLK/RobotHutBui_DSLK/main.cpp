@@ -3,12 +3,19 @@
 
 int main()
 {
-	Map prob;
-	prob.Nhap("input.txt");
-	cout << "Map hien tai:" << endl;
-	prob.ShowMap();
     Cleaner VC;
-	VC.Init(prob);
+	cout << "Tien hanh nhap thong tin robot:" << endl;
+	VC.Init();
+	Map room_map;
+	cout << "Chinh sua ban do tren file input.txt... Nhan bat ki phim nao de tiep tuc chuong trinh." << endl;;
+	system("pause");
+	room_map.Nhap("input.txt");
+	cout << "Da nhap xong du lieu ban do. Ban do hien tai:" << endl;
+	room_map.ShowMap();
+
+	VC.SetMap(room_map);
+	cout << "Da dua thong tin ban do vao robot. Thiet lap vi tri robot:" << endl;
+	VC.SetRobotInMap();
 	VC.Menu();
     return 1;
 }
