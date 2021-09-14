@@ -448,6 +448,7 @@ class Cleaner
 				if (kq_findpath)
 					RoBotGo();
 				PrintInfo();
+				ControlLowBattery();
 			}
 		}
 
@@ -461,6 +462,7 @@ class Cleaner
 				if (kq_findpath)
 					RoBotGo();
 				PrintInfo();
+				ControlLowBattery();
 				Sleep(500);
 			}
 		}
@@ -518,6 +520,7 @@ class Cleaner
 					current.position->cell.type = 0; //
 					current_battery--;
 					PrintInfo();
+					ControlLowBattery();
 					system("pause");
 				}
 				else
