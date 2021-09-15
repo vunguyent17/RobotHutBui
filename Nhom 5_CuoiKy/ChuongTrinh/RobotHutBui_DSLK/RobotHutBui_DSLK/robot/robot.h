@@ -77,22 +77,6 @@ class Cleaner
 			current.position->cell.type = 0;
 		}
 
-		int isComplete()
-		{
-			Node* p1 = map_data.getpHead();
-			while (p1)
-			{
-				Node* p2 = p1;
-				while (p2)
-				{
-					if (p2->cell.type == 3)
-						return false;
-					p2 = p2->pEast;
-				}
-				p1 = p1->pSouth;
-			}
-			return true;
-		}
 
 		void PrintInfo()
 		{
@@ -448,7 +432,6 @@ class Cleaner
 				if (kq_findpath)
 					RoBotGo();
 				PrintInfo();
-				ControlLowBattery();
 			}
 		}
 
@@ -462,7 +445,6 @@ class Cleaner
 				if (kq_findpath)
 					RoBotGo();
 				PrintInfo();
-				ControlLowBattery();
 				Sleep(500);
 			}
 		}
@@ -500,27 +482,50 @@ class Cleaner
 
 		//AUTOMATIC MODE
 
+		int CountUncleaned()
+		{
+			int count_uncleaned = 0;
+			Node* p1 = map_data.getpHead();
+			while (p1)
+			{
+				Node* p2 = p1;
+				while (p2)
+				{
+					if (p2->cell.type == 3)
+						count_uncleaned++;
+					p2 = p2->pEast;
+				}
+				p1 = p1->pSouth;
+			}
+			return count_uncleaned;
+		}
+
 		void Auto()
 		{
 			int timer;
 			timer = 0;
+			int count_uncleaned = CountUncleaned();
 			cout << "*Timer: " << timer << endl;
 			PrintInfo();
 			system("pause");
 
-			timer++;
-			while (!isComplete())
+			while (count_uncleaned != 0)
 			{
+				
 				cout << "*Timer: " << timer << endl;
-				Node* p = current.position; //
 				if (current_battery > 0.02*battery_threshold)
 				{
+					timer++;
+					Node* p = current.position;
 					FindPath_Auto();
-					p->cell.type = 2; //
-					current.position->cell.type = 0; //
+					p->cell.type = 2; //Danh dau tren map o truoc do da don sach
+					if (current.position->cell.type == 3)
+					{
+						count_uncleaned--;
+					}
+					current.position->cell.type = 0; //Danh dau tren map vi tri hien tai cua robot
 					current_battery--;
 					PrintInfo();
-					ControlLowBattery();
 					system("pause");
 				}
 				else
@@ -528,13 +533,17 @@ class Cleaner
 					cout << "Het pin. Khong the tien hanh di chuyen. Xin hay sac." << endl;
 					return;
 				}
-				timer++;
+				
 				cout << "-----------------------" << endl;
 				
 			}
-			if (isComplete())
+			if (CountUncleaned() == 0)
 			{
 				cout << "DA DON SACH! :)" << endl;
+			}
+			else
+			{
+				cout << "ERROR" << endl;
 			}
 		}
 };
