@@ -530,6 +530,7 @@ class Cleaner
 			PrintInfo();
 			Sleep(1000);
 
+			timer++;
 			while (count_uncleaned != 0)
 			{
 				
