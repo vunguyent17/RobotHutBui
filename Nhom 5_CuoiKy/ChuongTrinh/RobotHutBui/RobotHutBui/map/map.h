@@ -186,4 +186,38 @@ public:
 			}
 		}
 	}
+
+
+	void XoaMap()
+	{
+		if (pHead != NULL)
+		{
+			Node* p1 = pHead;
+			while (true)
+			{
+				Node* p2 = p1->pEast;
+				while (p2)
+				{
+					Node* p_del = p2;
+					p2 = p2->pEast;
+					delete p_del;
+				}
+				if (p1->pSouth != NULL)
+				{
+					p1 = p1->pSouth;
+				}
+				else
+				{
+					break;
+				}
+			}
+			p1 = p1->pNorth;
+			while (p1)
+			{
+				Node* p_del = p1;
+				p1 = p1->pNorth;
+				delete p_del;
+			}
+		}
+	}
 };

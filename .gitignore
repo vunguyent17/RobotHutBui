@@ -33,5 +33,8 @@
 
 /Debug
 **/Debug
-Nhom 5_CuoiKy/ChuongTrinh/**/.vs
+**/.vs
 **/x64
+*.mp3
+*.mkv
+Demo_TimeNote.txt

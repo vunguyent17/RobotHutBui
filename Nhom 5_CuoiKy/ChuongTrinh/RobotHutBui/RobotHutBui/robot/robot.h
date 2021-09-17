@@ -26,21 +26,42 @@ class Cleaner
     public:
 		void Menu()
 		{
-			cout << "Chon mot trong hai che do: 1. Manual, 2. Auto: ";
 			int option = -1;
-			cin >> option;
-
-			switch (option)
+			do
 			{
-			case 1:
-				Manual();
-				break;
-			case 2:
-				Auto();
-				break;
-			default:
-				break;
-			}
+				cout << "Chon mot trong hai che do: 1. Manual, 2. Auto, 3. Reset, 4. Exit: ";
+				cin >> option;
+				switch (option)
+				{
+				case 1:
+					Manual();
+					break;
+				case 2:
+					Auto();
+					break;
+				case 3:
+					Reset();
+					break;
+				default:
+					break;
+				}
+			} while (option != 4);
+			cout << "Ket thuc chuong trinh" << endl;
+		}
+
+		void Reset()
+		{
+			Map room_map;
+			cout << "Chinh sua ban do tren file input.txt... Nhan bat ki phim nao de tiep tuc chuong trinh." << endl;;
+			system("pause");
+			room_map.Nhap("input.txt");
+			cout << "Da nhap xong du lieu ban do. Ban do hien tai:" << endl;
+			room_map.ShowMap();
+
+			map_data.XoaMap();
+			SetMap(room_map);
+			cout << "Da dua thong tin ban do vao robot. Thiet lap vi tri robot:" << endl;
+			SetRobotInMap();
 		}
 	
 		//NHAP va XUAT
@@ -445,17 +466,18 @@ class Cleaner
 				if (kq_findpath)
 					RoBotGo();
 				PrintInfo();
-				Sleep(500);
+				Sleep(1000);
 			}
 		}
 
 		void Manual()
 		{
 			PrintInfo();
-			cout << "Chon: 1. Live Control, 2. Setup Control, 0.Exit: ";
+			
 			int option = -1;
 			do
 			{
+				cout << "Chon: 1. Live Control, 2. Setup Control, 0.Exit: ";
 				cin >> option;
 				switch (option)
 				{
@@ -475,7 +497,6 @@ class Cleaner
 				default:
 					break;
 				}
-				cout << "Chon: 1. Live Control, 2. Setup Control, 0.Exit: ";
 			} while (option != 0);
 		}
 
@@ -507,7 +528,7 @@ class Cleaner
 			int count_uncleaned = CountUncleaned();
 			cout << "*Timer: " << timer << endl;
 			PrintInfo();
-			system("pause");
+			Sleep(1000);
 
 			while (count_uncleaned != 0)
 			{
@@ -526,7 +547,7 @@ class Cleaner
 					current.position->cell.type = 0; //Danh dau tren map vi tri hien tai cua robot
 					current_battery--;
 					PrintInfo();
-					system("pause");
+					Sleep(1000);
 				}
 				else
 				{
