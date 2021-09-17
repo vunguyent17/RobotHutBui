@@ -41,7 +41,6 @@ protected:
 	Node* pHead;			//Luu lai Node dau tien
 
 	Node* pPivotHead;		//Luu lai Node dau tien cua mot dong
-	Node* pPivotNorth;		//Luu lai Node phia Bac cua node hien tai
 	Node* pTail;			//Luu lai Node sau cung hien tai
 public:
 	Node* getpHead()
@@ -65,7 +64,6 @@ public:
 			p->cell.y = 0;
 			pHead = p;
 			pTail = p;
-			pPivotNorth = NULL;
 			pPivotHead = pHead;
 		}
 		else
@@ -83,22 +81,22 @@ public:
 				}
 				else	//Neu insert hang tiep theo phai quan tam Node phia Bac
 				{
-					pPivotNorth = pPivotNorth->pEast; //Chuyen pPivotNorth sang Node phia Bac node muon chen vao
-					p->pNorth = pPivotNorth;			
+					Node* pCurrentNorth  = pTail->pNorth;
+					pCurrentNorth = pCurrentNorth->pEast; //Chuyen pPivotNorth sang Node phia Bac node muon chen vao
+					p->pNorth = pCurrentNorth;			
 					p->pWest = pTail;
-					pPivotNorth->pSouth = p;
+					pCurrentNorth->pSouth = p;
 					pTail->pEast = p;
 					pTail = p;
 				}
 			}
 			else	//Truong hop Hang hien tai da du so node
 			{
-				pPivotNorth = pPivotHead;	//Chuyen pPivotNorth sang Node dau hang hien tai
 				//Tao Node dau hang moi
-				p->pNorth = pPivotNorth;
+				p->pNorth = pPivotHead;
 				p->cell.y = 0;
-				p->cell.x = pPivotNorth->cell.x + 1;
-				pPivotNorth->pSouth = p;
+				p->cell.x = pPivotHead->cell.x + 1;
+				pPivotHead->pSouth = p;
 				pTail = p;
 				pPivotHead = p;		//Luu lai Node dau hang moi tao vao pPivotHead
 
