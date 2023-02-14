@@ -32,9 +32,9 @@ This program simulates how a Robot Vacuum Cleaner works, and find a method so th
 
 
 ### Demo
-Tải file demo.zip xuống, giải nén và chạy file RobotHutBui.exe. Chỉnh sửa sơ đồ căn phòng bằng cách chỉnh sửa file input.txt (1 là vật cản trong phòng, 3 là ô trống, 4 là tường)
+Tải file demo.zip xuống, giải nén và chạy file RobotHutBui.exe. Chỉnh sửa sơ đồ căn phòng bằng cách chỉnh sửa file input.txt (trong file mô tả căn phòng dưới dạng ma trận hai chiều: hai dòng đầu tiên chỉ kích thước của ma trận (số dòng và số cột); các dòng tiếp theo là ma trận mô tả căn phòng, trong đó 1 là vật cản trong phòng, 3 là ô trống, 4 là tường)
 
-Download demo.zip, extract it and run RobotHutBui.exe. Modify map of the room using input.txt (1 - obstacle space, 3 - empty space, 4 - wall)
+Download demo.zip, extract it and run RobotHutBui.exe. Modify map of the room using input.txt (the room is described in form of a 2D matrix: first two numbers are the size of matrix (number of rows and columns, respectively); the rest are the matrix, with 1 - obstacle space, 3 - empty space, 4 - wall)
 
 
 ## Contributing
