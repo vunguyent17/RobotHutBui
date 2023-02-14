@@ -4,7 +4,8 @@
 int main()
 {
     Cleaner VC;
-	cout << "Tien hanh nhap thong tin robot:" << endl;
+	cout << "Welcome to Robot Vacuum Cleaner Simulator.\nYou will control a robot cleaner" << endl;
+	cout << "Before we begin , we need some Robot's specification:" << endl;
 	VC.Init();
 	VC.Reset();
 	VC.Menu();

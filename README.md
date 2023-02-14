@@ -1,6 +1,6 @@
 # Mô phỏng Robot Hút Bụi (Robot Vacuum Cleaner Simulator)
 
-<img src="" width="300" alt="Chương trình" />
+<img src="https://github.com/vunguyent17/RobotHutBui/blob/main/Screenshot/Screenshot%20RobotHutBui2.png" width="300" alt="Chương trình" />
 
 ## Giới thiệu / Introduction
 
@@ -11,15 +11,15 @@ This program simulates how a Robot Vacuum Cleaner works, and find a method so th
 ### Chức năng của ứng dụng / Functionality:
 - Nhập bản đồ căn phòng cho robot bằng file txt, hiển thị bản đồ và trạng thái làm việc lên console
 -	Chương trình có các chế độ hút bụi: Manual, Auto
-- Chế độ chạy bằng tay (Manual): có 2 cách di chuyển
-  - Live control: Người dùng nhập lệnh và robot di chuyển
-  - Setup control: Người dùng nhập hướng đi và số bước cho robot di chuyển
-- Chế độ chạy tự động: Robot sẽ tự động quét hết căn phòng.
+  - Chế độ chạy bằng tay (Manual): có 2 cách di chuyển
+    - Live control: Người dùng nhập lệnh và robot di chuyển
+    - Setup control: Người dùng nhập hướng đi và số bước cho robot di chuyển
+  - Chế độ chạy tự động: Robot sẽ tự động quét hết căn phòng.
 - Thông bao pin yếu / tự động ngừng khi hết pin
  <br/>
 
 - Input room map using text file. Display map and robot status on console
-- Robot has 2 modes when working: Manual, Mode
+- Robot has 2 modes when working: Manual, Auto
   - Manual mode: there are two ways to control robot manually:
     - Live control: Robot moves by each command from user's input
     - Setup control: User types direction and number of steps to move robot

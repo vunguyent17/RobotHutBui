@@ -14,7 +14,7 @@ struct Direction
 class Cleaner
 {
     protected:
-        string manufacturer = "cleanerABC";
+        string manufacturer = "RobotCleanerABC";
         string serial_number = "vunt1";
         float current_battery = 0;
 		float battery_threshold = 0;
@@ -29,7 +29,7 @@ class Cleaner
 			int option = -1;
 			do
 			{
-				cout << "Chon mot trong hai che do: 1. Manual, 2. Auto, 3. Reset, 4. Exit: ";
+				cout << "Choose an option: 1. Run with Manual Mode, 2. Run with Auto Mode, 3. Reset Program, 4. Exit: ";
 				cin >> option;
 				switch (option)
 				{
@@ -46,30 +46,30 @@ class Cleaner
 					break;
 				}
 			} while (option != 4);
-			cout << "Ket thuc chuong trinh" << endl;
+			cout << "Program ends. Thank you for using :)" << endl;
 		}
 
 		void Reset()
 		{
 			Map room_map;
-			cout << "Chinh sua ban do tren file input.txt... Nhan bat ki phim nao de tiep tuc chuong trinh." << endl;;
+			cout << "Before we continue, open file input.txt and modify it ... \nWhen you're done modifying the map, return to this window and type any key to continue this program." << endl;;
 			system("pause");
 			room_map.Nhap("input.txt");
-			cout << "Da nhap xong du lieu ban do. Ban do hien tai:" << endl;
+			cout << "Map data has been imported. This is the map we received:" << endl;
 			room_map.ShowMap();
 
 			map_data.XoaMap();
 			SetMap(room_map);
-			cout << "Da dua thong tin ban do vao robot. Thiet lap vi tri robot:" << endl;
+			cout << "The map has been given to robot. Proceed to set robot's location in the map:" << endl;
 			SetRobotInMap();
 		}
 	
 		//NHAP va XUAT
 		void Init()
 		{
-			cout << "Nhap dung luong pin toi da: ";
+			cout << "- Input robot's battery capacity: ";
 			cin >> battery_threshold;
-			cout << "Nhap dung luong pin hien tai: ";
+			cout << "- Input current baterry level : ";
 			cin >> current_battery;
 
 		}
@@ -82,13 +82,13 @@ class Cleaner
 		void SetRobotInMap()
 		{
 			int x, y;
-			cout << "Nhap toa do x cua may hut bui (bat dau tu 0, tu tren xuong duoi): ";
+			cout << "- Input x-coordinate of the robot's location in the map (starts from 0 from the top of the map): ";
 			cin >> x;
-			cout << "Nhap toa do y cua may hut bui (bat dau tu 0, tu trai qua phai): ";
+			cout << "- Input y-coordinate of the robot's location in the map (starts from 0 from the left of the map): ";
 			cin >> y;
 			current.position = map_data.FindNode(x, y);
 
-			cout << "Nhap huong cua may hut bui (0.North, 1.East, 2.South, 3.West): ";
+			cout << "- Input the current direction of the robot (0.North, 1.East, 2.South, 3.West): ";
 			cin >> current.direction;
 
 
@@ -149,21 +149,21 @@ class Cleaner
 			int flag = 0;
 			if (!CheckBattery(float(0.05)*temp) && (float(0.05)*temp < (current_battery + 1)))
 			{
-				cout << "LUU Y: Nguon pin duoi 5%. Xin hay sac robot cua ban." << endl;
+				cout << "WARNING: Battery's level under 5% of its capacity. Please charge." << endl;
 				flag = 1;
 			}
 			else
 			{
 				if (!CheckBattery(float(0.1)*temp) && (float(0.1)*temp < (current_battery + 1)))
 				{
-					cout << "LUU Y: Nguon pin duoi 10%. Xin hay sac robot cua ban." << endl;
+					cout << "WARNING: Battery's level under 10% of its capacity. Please charge." << endl;
 					flag = 1;
 				}
 				else
 				{
 					if (!CheckBattery(float(0.15)*temp) && (float(0.15)*temp < (current_battery + 1)))
 					{
-						cout << "LUU Y: Nguon pin duoi 15%. Xin hay sac robot cua ban." << endl;
+						cout << "WARNING: Battery's level under 15% of its capacity. Please charge." << endl;
 						flag = 1;
 					}
 				}
@@ -429,7 +429,7 @@ class Cleaner
 			ControlLowBattery();
 			if (current_battery < 0.02*battery_threshold)
 			{
-				cout << "Het pin. Khong the tien hanh di chuyen. Xin hay sac." << endl;
+				cout << "Running out of battery. The robot is unable to move. Please charge." << endl;
 				return;
 			}
 
@@ -475,7 +475,7 @@ class Cleaner
 			int option = -1;
 			do
 			{
-				cout << "Chon: 1. Live Control, 2. Setup Control, 0.Exit: ";
+				cout << "Choose how you will manually control this robot: 1. Live Control, 2. Setup Control, 0.Exit: ";
 				cin >> option;
 				switch (option)
 				{
@@ -486,7 +486,7 @@ class Cleaner
 				{
 					int step;
 					unsigned int flag = 1;
-					cout << "Nhap so buoc de robot di chuyen: ";
+					cout << "Input how many steps you want robot to move: ";
 					cin >> step;
 					flag = ChooseAction(flag);
 					SetupControl(step, flag);
@@ -551,14 +551,14 @@ class Cleaner
 				}
 				else
 				{
-					cout << "Het pin. Khong the tien hanh di chuyen. Xin hay sac." << endl;
+					cout << "Running out of battery. The robot is unable to move. Please charge." << endl;
 					return;
 				}
 				
 			}
 			if (CountUncleaned() == 0)
 			{
-				cout << "DA DON SACH! :)" << endl;
+				cout << "CLEANING FINISHED! :)" << endl;
 			}
 			else
 			{
