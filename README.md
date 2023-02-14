@@ -1,6 +1,6 @@
 # Mô phỏng Robot Hút Bụi (Robot Vacuum Cleaner Simulator)
 
-<img src="https://github.com/vunguyent17/RobotHutBui/blob/main/Screenshot/Screenshot%20RobotHutBui2.png" width="300" alt="Chương trình" />
+<img src="https://github.com/vunguyent17/RobotHutBui/blob/main/Screenshot/Screenshot%20RobotHutBui2.png" width="700" alt="Chương trình" />
 
 ## Giới thiệu / Introduction
 
