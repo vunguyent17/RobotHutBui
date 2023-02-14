@@ -119,9 +119,6 @@ public:
 			{
 				switch (p2->cell.type)
 				{
-				case 0:
-					cout << "x";
-					break;
 				case 1:
 					cout << "*";
 					break;
@@ -133,6 +130,18 @@ public:
 					break;
 				case 4:
 					cout << "=";
+					break;
+				case 5:
+					cout << "^";
+					break;
+				case 6:
+					cout << ">";
+					break;
+				case 7:
+					cout << "v";
+					break;
+				case 8:
+					cout << "<";
 					break;
 				default:
 					break;

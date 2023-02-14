@@ -14,8 +14,8 @@ struct Direction
 class Cleaner
 {
     protected:
-        string manufacturer = "";
-        string serial_number = "";
+        string manufacturer = "cleanerABC";
+        string serial_number = "vunt1";
         float current_battery = 0;
 		float battery_threshold = 0;
         Map map_data;
@@ -67,10 +67,6 @@ class Cleaner
 		//NHAP va XUAT
 		void Init()
 		{
-			cout << "Nhap manufacturer: ";
-			getline(cin, manufacturer);
-			cout << "Nhap serial number: ";
-			getline(cin, serial_number);
 			cout << "Nhap dung luong pin toi da: ";
 			cin >> battery_threshold;
 			cout << "Nhap dung luong pin hien tai: ";
@@ -95,7 +91,9 @@ class Cleaner
 			cout << "Nhap huong cua may hut bui (0.North, 1.East, 2.South, 3.West): ";
 			cin >> current.direction;
 
-			current.position->cell.type = 0;
+
+			current.position->cell.type = current.direction + 5;
+			
 		}
 
 
@@ -435,7 +433,7 @@ class Cleaner
 				return;
 			}
 
-			current.position->cell.type = 0;
+			current.position->cell.type = current.direction + 5;
 			current_battery--;
 		}
 
@@ -466,7 +464,7 @@ class Cleaner
 				if (kq_findpath)
 					RoBotGo();
 				PrintInfo();
-				Sleep(1000);
+				Sleep(100);
 			}
 		}
 
@@ -528,12 +526,12 @@ class Cleaner
 			int count_uncleaned = CountUncleaned();
 			cout << "*Timer: " << timer << endl;
 			PrintInfo();
-			Sleep(1000);
+			Sleep(100);
 
 			timer++;
 			while (count_uncleaned != 0)
 			{
-				
+				system("cls");
 				cout << "*Timer: " << timer << endl;
 				if (current_battery > 0.02*battery_threshold)
 				{
@@ -545,18 +543,17 @@ class Cleaner
 					{
 						count_uncleaned--;
 					}
-					current.position->cell.type = 0; //Danh dau tren map vi tri hien tai cua robot
+
+					current.position->cell.type = current.direction + 5; //Danh dau tren map vi tri hien tai cua robot
 					current_battery--;
 					PrintInfo();
-					Sleep(1000);
+					Sleep(100);
 				}
 				else
 				{
 					cout << "Het pin. Khong the tien hanh di chuyen. Xin hay sac." << endl;
 					return;
 				}
-				
-				cout << "-----------------------" << endl;
 				
 			}
 			if (CountUncleaned() == 0)
